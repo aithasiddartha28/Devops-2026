@@ -1,7 +1,8 @@
 import { useState } from "react";
 import "./App.css";
 import Dashboard from "./Dashboard";
-import { API_URL, apiRequest } from "./api";
+
+const API_URL = import.meta.env.VITE_API_URL ?? "";
 
 function App() {
   const [isLogin, setIsLogin] = useState(true);
@@ -32,14 +33,18 @@ function App() {
         ? `${API_URL}/api/auth/login`
         : `${API_URL}/api/auth/register`;
 
-      const data = await apiRequest(endpoint, {
+      const response = await fetch(endpoint, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify(formData)
       });
-      if (isLogin) {
+
+      const data = await response.json();
+      if (!response.ok) {
+        setMessage(data.message || "Something went wrong");
+      } else if (isLogin) {
         setLoggedInUser({ ...data.user, accessToken: data.token });
       } else {
         setIsLogin(true);
