@@ -39,6 +39,12 @@ Requirements: Node.js 20 or newer, npm, and a reachable MongoDB instance.
 
 The backend accepts a comma-separated `FRONTEND_ORIGIN` list to configure CORS (the default allows both `localhost:5173` and `127.0.0.1:5173`) and `PORT` to change its listening port. MongoDB Atlas SRV records are resolved using Google's public DNS servers because some local DNS resolvers refuse SRV lookups. If `JWT_SECRET` is omitted in local development, a temporary random key is generated; this invalidates sessions on server restart. Always configure a persistent secret outside local development.
 
+## Public deployment
+
+GitHub Pages hosts only the frontend; it cannot run the Express/Socket.IO backend or MongoDB. Deploy the backend and configure a cloud MongoDB database separately. Set the backend's `MONGO_URI`, `JWT_SECRET`, and `FRONTEND_ORIGIN` environment variables, with `FRONTEND_ORIGIN` set to `https://aithasiddartha28.github.io`.
+
+In the GitHub repository, add an Actions variable named `VITE_API_URL` under **Settings → Secrets and variables → Actions → Variables**. Set it to the deployed backend's public origin (for example, `https://your-backend.example.com`, without a trailing slash), then rerun the **Deploy ChatConnect to GitHub Pages** workflow. Register a new account on the public site after the backend is connected.
+
 ## Docker Compose
 
 Set `MONGO_URI`, `JWT_SECRET`, and (optionally) `ADMIN_EMAIL` in the environment, then run:

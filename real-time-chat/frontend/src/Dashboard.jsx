@@ -1,8 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
-
-const API_URL = import.meta.env.VITE_API_URL ??
-  (import.meta.env.DEV ? "http://localhost:5000" : "");
+import { API_URL, apiRequest } from "./api";
 const getRoom = (conversation, userId) => {
   if (conversation.type === "group") return conversation.group._id;
   if (conversation.type === "direct") {
@@ -13,7 +11,7 @@ const getRoom = (conversation, userId) => {
 
 const request = async (path, options = {}, token) => {
   const { headers = {}, ...requestOptions } = options;
-  const response = await fetch(`${API_URL}${path}`, {
+  return apiRequest(`${API_URL}${path}`, {
     ...requestOptions,
     headers: {
       "Content-Type": "application/json",
@@ -21,9 +19,6 @@ const request = async (path, options = {}, token) => {
       ...headers
     }
   });
-  const data = await response.json();
-  if (!response.ok) throw new Error(data.message || "Request failed");
-  return data;
 };
 
 const formatTime = (date) => date ? new Date(date).toLocaleString() : "No activity yet";
